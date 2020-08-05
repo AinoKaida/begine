@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "TimeManager.h"
 #include <SDL.h>
 #include "TextObject.h"
 #include "GameObject.h"
@@ -40,6 +41,12 @@ void dae::Minigin::Initialize()
 /**
  * Code constructing the scene world starts here
  */
+
+void dae::Minigin::LoadFPSCounter() const
+{
+
+}
+
 void dae::Minigin::LoadGame() const
 {
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
@@ -57,6 +64,9 @@ void dae::Minigin::LoadGame() const
 	auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
 	to->SetPosition(80, 20);
 	scene.Add(to);
+
+	// Load FPS-counter
+	LoadFPSCounter();
 }
 
 void dae::Minigin::Cleanup()
@@ -77,23 +87,36 @@ void dae::Minigin::Run()
 	LoadGame();
 
 	{
+		// Statics
 		auto& renderer = Renderer::GetInstance();
 		auto& sceneManager = SceneManager::GetInstance();
 		auto& input = InputManager::GetInstance();
+		auto& time = TimeManager::GetInstance();
+
+		// Catch up Game Loop
+		auto previousTime = high_resolution_clock::now();
+		float lag{ 0.f };
 
 		bool doContinue = true;
 		while (doContinue)
 		{
 			const auto currentTime = high_resolution_clock::now();
-			
+			time.Update(duration<float, milli>(currentTime - previousTime).count());
+			previousTime = currentTime;
+			lag += time.getDeltaTime();
+
 			doContinue = input.ProcessInput();
-			sceneManager.Update();
+
+			while (lag >= MsPerFrame)
+			{
+				sceneManager.Update();
+				lag -= MsPerFrame;
+			}
+
 			renderer.Render();
-			
-			auto sleepTime = duration_cast<duration<float>>(currentTime + milliseconds(MsPerFrame) - high_resolution_clock::now());
-			this_thread::sleep_for(sleepTime);
 		}
 	}
 
 	Cleanup();
 }
+
