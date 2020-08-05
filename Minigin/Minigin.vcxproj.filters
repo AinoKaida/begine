@@ -33,9 +33,6 @@
     <ClInclude Include="MiniginPCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -75,12 +72,12 @@
     <ClInclude Include="Singleton.h">
       <Filter>Header Files\Abstract</Filter>
     </ClInclude>
+    <ClInclude Include="TextureObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
@@ -118,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Source Files\Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

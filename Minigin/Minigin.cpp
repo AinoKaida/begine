@@ -9,7 +9,7 @@
 #include "TimeManager.h"
 #include <SDL.h>
 #include "TextObject.h"
-#include "GameObject.h"
+#include "TextureObject.h"
 #include "Scene.h"
 
 using namespace std;
@@ -51,11 +51,11 @@ void dae::Minigin::LoadGame() const
 {
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
-	auto go = std::make_shared<GameObject>();
+	auto go = std::make_shared<TextureObject>();
 	go->SetTexture("background.jpg");
 	scene.Add(go);
 
-	go = std::make_shared<GameObject>();
+	go = std::make_shared<TextureObject>();
 	go->SetTexture("logo.png");
 	go->SetPosition(216, 180);
 	scene.Add(go);
