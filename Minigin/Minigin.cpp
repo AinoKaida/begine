@@ -8,9 +8,10 @@
 #include "ResourceManager.h"
 #include "TimeManager.h"
 #include <SDL.h>
-#include "TextObject.h"
-#include "TextureObject.h"
+#include "TextComponent.h"
+#include "TextureComponent.h"
 #include "Scene.h"
+#include "FPSCounter.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -44,29 +45,35 @@ void dae::Minigin::Initialize()
 
 void dae::Minigin::LoadFPSCounter() const
 {
+	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
+	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 26);
+	auto tc = std::make_shared<TextComponent>("", font);
+	tc->SetPosition(20, 20);
+
+	auto fps = std::make_shared<FPSCounter>(tc);
+	scene.Add(fps);
+}
+
+void dae::Minigin::LoadDaeImage() const
+{
+
+}
+
+void dae::Minigin::LoadProg4AssignmentText() const
+{
+	//auto& scene = SceneManager::GetInstance().CreateScene("Demo");
+
+	//auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	//auto tc = std::make_shared<TextComponent>("", font);
+	//tc->SetPosition(80, 20);
 }
 
 void dae::Minigin::LoadGame() const
 {
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
-
-	auto go = std::make_shared<TextureObject>();
-	go->SetTexture("background.jpg");
-	scene.Add(go);
-
-	go = std::make_shared<TextureObject>();
-	go->SetTexture("logo.png");
-	go->SetPosition(216, 180);
-	scene.Add(go);
-
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
-	to->SetPosition(80, 20);
-	scene.Add(to);
-
-	// Load FPS-counter
 	LoadFPSCounter();
+	LoadDaeImage();
+	LoadProg4AssignmentText();
 }
 
 void dae::Minigin::Cleanup()
@@ -101,16 +108,18 @@ void dae::Minigin::Run()
 		while (doContinue)
 		{
 			const auto currentTime = high_resolution_clock::now();
-			time.Update(duration<float, milli>(currentTime - previousTime).count());
+			time.deltaTime = duration<float, milli>(currentTime - previousTime).count();
 			previousTime = currentTime;
 			lag += time.getDeltaTime();
+			time.lag = lag;
 
 			doContinue = input.ProcessInput();
 
-			while (lag >= MsPerFrame)
+			while (lag >= MsPerUpdate)
 			{
 				sceneManager.Update();
-				lag -= MsPerFrame;
+				lag -= MsPerUpdate;
+				time.lag = lag;
 			}
 
 			renderer.Render();

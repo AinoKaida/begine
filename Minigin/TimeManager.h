@@ -1,5 +1,6 @@
 #pragma once
 #include "Singleton.h"
+#include "Minigin.h"
 
 namespace dae
 {
@@ -7,12 +8,14 @@ namespace dae
 	class TimeManager : public Singleton<TimeManager>
 	{
 	public:
-		void Update(float elapsedTime);
 		float getDeltaTime() const;
+		float getLag() const;
 
 	private:
 		friend class Singleton<TimeManager>;
+		friend void Minigin::Run();
 		TimeManager() = default;
 		float deltaTime;
+		float lag;
 	};
 }
